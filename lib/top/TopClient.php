@@ -94,22 +94,24 @@ class TopClient
 
 	protected function logCommunicationError($apiName, $requestUrl, $errorCode, $responseTxt)
 	{
+		var_dump($apiName, $requestUrl, $errorCode, $responseTxt);
+		exit;
 		$localIp = isset($_SERVER["SERVER_ADDR"]) ? $_SERVER["SERVER_ADDR"] : "CLI";
-		$logger = new LtLogger;
-		$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_comm_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
-		$logger->conf["separator"] = "^_^";
-		$logData = array(
-		date("Y-m-d H:i:s"),
-		$apiName,
-		$this->appkey,
-		$localIp,
-		PHP_OS,
-		$this->sdkVersion,
-		$requestUrl,
-		$errorCode,
-		str_replace("\n","",$responseTxt)
-		);
-		$logger->log($logData);
+// 		$logger = new \Log;
+// 		$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_comm_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
+// 		$logger->conf["separator"] = "^_^";
+// 		$logData = array(
+// 		date("Y-m-d H:i:s"),
+// 		$apiName,
+// 		$this->appkey,
+// 		$localIp,
+// 		PHP_OS,
+// 		$this->sdkVersion,
+// 		$requestUrl,
+// 		$errorCode,
+// 		str_replace("\n","",$responseTxt)
+// 		);
+// 		$logger->log($logData);
 	}
 
 	public function execute($request, $session = null)
@@ -167,7 +169,7 @@ class TopClient
 		$respWellFormed = false;
 		if ("json" == $this->format)
 		{
-			$respObject = json_decode($resp);
+			$respObject = json_decode($resp, true);
 			if (null !== $respObject)
 			{
 				$respWellFormed = true;
@@ -198,12 +200,13 @@ class TopClient
 		//如果TOP返回了错误码，记录到业务错误日志中
 		if (isset($respObject->code))
 		{
-			$logger = new LtLogger;
-			$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_biz_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
-			$logger->log(array(
-				date("Y-m-d H:i:s"),
-				$resp
-			));
+			var_dump($resp);
+// 			$logger = new LtLogger;
+// 			$logger->conf["log_file"] = rtrim(TOP_SDK_WORK_DIR, '\\/') . '/' . "logs/top_biz_err_" . $this->appkey . "_" . date("Y-m-d") . ".log";
+// 			$logger->log(array(
+// 				date("Y-m-d H:i:s"),
+// 				$resp
+// 			));
 		}
 		return $respObject;
 	}

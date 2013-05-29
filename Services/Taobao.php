@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\DependencyInjection\Container;
 
-require "TopClient.php";
+
 
 class Taobao
 {
@@ -26,6 +26,7 @@ class Taobao
     private $appSecret;
     private $apiUrl;
     private $pid;
+    private $libpath;
     /**
      * 
      * @var Giko\TaobaoBundle\Services\Taobao
@@ -37,13 +38,19 @@ class Taobao
 //     <argument key="api_url">%giko_taobao.api_url%</argument>
 //     <argument key="pid">%giko_taobao.pid%</argument>
     
-    public function __construct($app_key, $app_secret, $api_url, $pid)
+    public function __construct($app_key, $app_secret, $api_url, $pid, $libpath)
     {
-        $c = new TopClient();
-        $c->appKey = $app_key;
-        $c->appSecret = $app_secret;
-        $c->apiUrl = $app_url;
+    	$this->libpath = $libpath;
+    	
+    	include $this->libpath . "/TopClient.php";
+    	include $this->libpath . "/RequestCheckUtil.php";
+    	
+        $c = new \TopClient();
+        $c->appkey = $app_key;
+        $c->secretKey = $app_secret;
+        $c->apiUrl = $api_url;
         $c->pid = $pid;
+        $c->format = 'json';
         $this->client = $c;
     }
     
@@ -54,13 +61,13 @@ class Taobao
 
     public function exec($request, $arguments = [])
     {
-        include "request/{$request}.php";
+        include $this->libpath . "/request/{$request}.php";
         
         $req = new $request;
         foreach ($arguments as $k => $v) {
-        	$func = Container::camelize($k);
+        	$func = Container::camelize('set' . $k);
         	$req->$func($v);
         }
-        return $this->client->execute($req, $sessionKey);
+        return $this->client->execute($req);
     }
 }
