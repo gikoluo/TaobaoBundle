@@ -12,18 +12,37 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfigTreeBuilder()
-    {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('giko_taobao');
-
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
-
-        return $treeBuilder;
-    }
+	
+	/**
+	 * Generates the configuration tree.
+	 *
+	 * @return TreeBuilder
+	 */
+	public function getConfigTreeBuilder()
+	{
+		$treeBuilder = new TreeBuilder();
+		$rootNode = $treeBuilder->root('giko_taobao');
+	
+		$rootNode
+		->validate()
+		->always(function($v) {
+			if (!empty($v['callback_url']) && !empty($v['callback_route'])) {
+				throw new \Exception('You cannot configure a "callback_url", and a "callback_route" at the same time.');
+			}
+	
+			return $v;
+		})
+		->end()
+		->children()
+		->scalarNode('libpath')->defaultValue("%kernel.root_dir%/../vendor/giko/taobao-bundle/Giko/TaobaoBundle/lib/")->end()
+		->scalarNode('app_key')->isRequired()->cannotBeEmpty()->end()
+		->scalarNode('app_secret')->isRequired()->cannotBeEmpty()->end()
+		->scalarNode('pid')->defaultValue("mm_30471349_3307211_11185021")->end()
+		->scalarNode('api_url')->defaultValue("gw.api.taobao.com")->end()
+		->scalarNode('alias')->defaultNull()->end()
+		->end()
+		;
+	
+		return $treeBuilder;
+	}
 }
