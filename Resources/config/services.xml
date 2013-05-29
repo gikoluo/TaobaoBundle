@@ -6,13 +6,10 @@
 
     <parameters>
         <parameter key="giko_taobao.libpath">null</parameter>
-        <parameter key="giko_taobao.consumer_key">null</parameter>
-        <parameter key="giko_taobao.consumer_secret">null</parameter>
-        <parameter key="giko_taobao.access_token">null</parameter>
-        <parameter key="giko_taobao.access_token_secret">null</parameter>
-        <parameter key="giko_taobao.callback_url">null</parameter>
-        <parameter key="giko_taobao.anywhere_version">1</parameter>
-        
+        <parameter key="giko_taobao.app_key">null</parameter>
+        <parameter key="giko_taobao.app_secret">null</parameter>
+        <parameter key="giko_taobao.pid">mm_30471349_3307211_11185021</parameter>
+        <parameter key="giko_taobao.api_url">gw.api.taobao.com</parameter>
         <parameter key="giko_taobao.api.class">Giko\TaobaoBundle\Services\Taobao</parameter>
     </parameters>
     
@@ -23,6 +20,7 @@
             <argument key="app_secret">%giko_taobao.app_secret%</argument>
             <argument key="api_url">%giko_taobao.api_url%</argument>
             <argument key="pid">%giko_taobao.pid%</argument>
+            <argument key="libpath">%giko_taobao.libpath%</argument>
         </service>
     </services>
 </container>
