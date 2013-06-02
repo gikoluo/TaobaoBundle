@@ -41,15 +41,17 @@ class Taobao
     public function __construct($app_key, $app_secret, $api_url, $pid, $libpath)
     {
     	$this->libpath = $libpath;
+    	$this->pid = $pid;
     	
     	include $this->libpath . "/TopClient.php";
     	include $this->libpath . "/RequestCheckUtil.php";
+    	
+    	
     	
         $c = new \TopClient();
         $c->appkey = $app_key;
         $c->secretKey = $app_secret;
         $c->apiUrl = $api_url;
-        $c->pid = $pid;
         $c->format = 'json';
         $this->client = $c;
     }
@@ -64,6 +66,17 @@ class Taobao
         include $this->libpath . "/request/{$request}.php";
         
         $req = new $request;
+        if(method_exists($req, 'setPid')) {
+        	if ( strpos($this->pid, "mm") === 0) {
+        		$tmp = split("_", $this->pid);
+        		$pid = $tmp[1];
+        	}
+        	else {
+        		$pid = $this->pid;
+        	}
+        	$req->setPid($pid);
+        }
+        
         foreach ($arguments as $k => $v) {
         	$func = Container::camelize('set' . $k);
         	$req->$func($v);
